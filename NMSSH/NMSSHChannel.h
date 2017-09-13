@@ -126,6 +126,7 @@ typedef NS_ENUM(NSInteger, NMSSHChannelType)  {
  @returns Shell initialization success
  */
 - (BOOL)startShell:(NSError **)error;
+- (BOOL)startShell:(NSError *__autoreleasing *)error queue: (dispatch_queue_t) queue;
 
 /**
  Close a remote shell on an active channel.

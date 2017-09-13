@@ -307,6 +307,13 @@
 // -----------------------------------------------------------------------------
 
 - (BOOL)startShell:(NSError *__autoreleasing *)error  {
+    NSLog(@"NMSSH: new startShee");
+    return [self startShell:error queue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)];
+}
+
+
+- (BOOL)startShell:(NSError *__autoreleasing *)error queue: (dispatch_queue_t) queue  {
+    NSLog(@"NMSSH: new startShee");
     NMSSHLogInfo(@"Starting shell");
 
     if (![self openChannel:error]) {
@@ -325,8 +332,10 @@
 
     [self setLastResponse:nil];
     [self setSource:dispatch_source_create(DISPATCH_SOURCE_TYPE_READ, CFSocketGetNative([self.session socket]),
-                                           0, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0))];
+                                           0, queue)];
     dispatch_source_set_event_handler(self.source, ^{
+        NSLog(@"[NMSSH] %@", [NSThread currentThread]);
+
         NMSSHLogVerbose(@"Data available on the socket!");
         ssize_t rc, erc=0;
         char buffer[self.bufferSize];
